@@ -185,31 +185,27 @@ const config: Config = {
     ],
   ],
   stylesheets: [
-    {
-      href: "https://cdn.jsdelivr.net/npm/katex@0.13.24/dist/katex.min.css",
-      type: "text/css",
-      integrity:
-        "sha384-odtC+0UGzzFL/6PNoE8rX/SPcQDXBJ+uRepguP4QkPCm2LBxH3FA3y+fKSiJ+AmM",
-      crossorigin: "anonymous",
-      async: true, // Load the stylesheet asynchronously
-    },
-    {
-      href: "/path/to/local/custom.css", // Use a local path for custom styles
-      type: "text/css",
-    },
-  ],
+  //   {
+  //     href: "https://cdn.jsdelivr.net/npm/katex@0.13.24/dist/katex.min.css",
+  //     type: "text/css",
+  //     integrity:
+  //       "sha384-odtC+0UGzzFL/6PNoE8rX/SPcQDXBJ+uRepguP4QkPCm2LBxH3FA3y+fKSiJ+AmM",
+  //     crossorigin: "anonymous",
+  //     async: true, // Load the stylesheet asynchronously
+  //   },
+  // ],
 
   scripts: [
-    {
-      defer: true,
-      src: "https://cdn-cookieyes.com/client_data/dedcd40fe7e8316d7512b294/script.js",
-      id: "cookieyes",
-      "data-cfasync": "false", // Ensure scripts are not affected by Cloudflare's Rocket Loader
-    },
-    {
-      async: true,
-      src: "https://www.googletagmanager.com/gtag/js?id=G-E6JBVK9HQX",
-    },
+    // {
+    //   defer: true,
+    //   src: "https://cdn-cookieyes.com/client_data/dedcd40fe7e8316d7512b294/script.js",
+    //   id: "cookieyes",
+    //   "data-cfasync": "false", // Ensure scripts are not affected by Cloudflare's Rocket Loader
+    // },
+    // {
+    //   async: true,
+    //   src: "https://www.googletagmanager.com/gtag/js?id=G-E6JBVK9HQX",
+    // },
   ],
 };
 
