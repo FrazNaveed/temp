@@ -207,7 +207,7 @@ const config: Config = {
   //     async: true,
   //     src: "https://www.googletagmanager.com/gtag/js?id=G-E6JBVK9HQX",
   //   },
-  ],
+  // ],
 };
 
 export default config;
