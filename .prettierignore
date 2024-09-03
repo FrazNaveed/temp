@@ -1,0 +1,6 @@
+# Ignore all handlebar files
+**/*.hbs
+developer-hub-go/
+developer-hub-python/
+developer-hub-rust/
+developer-hub-javascript/

@@ -1,0 +1,285 @@
+---
+title: Read feeds offchain
+tags: [intermediate, ftso, python, rust, javascript, go]
+slug: read-feeds-offchain
+description: Read block-latency feeds using JS, Python, Rust, or Go.
+keywords:
+  [
+    javascript,
+    python,
+    rust,
+    go,
+    ftso,
+    oracle,
+    flare-time-series-oracle,
+    flare-network,
+  ]
+sidebar_position: 2
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+import CodeBlock from "@theme/CodeBlock";
+import ReadOffhainEthersJs from "!!raw-loader!/examples/developer-hub-javascript/ftsov2_consumer_coston2_ethers.js";
+import ReadOffhainWeb3Js from "!!raw-loader!/examples/developer-hub-javascript/ftsov2_consumer_coston2_web3.js";
+import ReadOffhainWeb3Py from "!!raw-loader!/examples/developer-hub-python/ftsov2_consumer_coston2.py";
+import ReadOffhainRust from "!!raw-loader!/examples/developer-hub-rust/src/bin/ftsov2_consumer_coston2.rs";
+import ReadOffhainGo from "!!raw-loader!/examples/developer-hub-go/ftsov2_consumer_coston2.go";
+
+This guide provides code examples demonstrating how to read FTSOv2 feeds off-chain using various programming languages. To read a block-latency feed off-chain, you need three key pieces of information:
+
+1. **RPC Endpoint URL:** The RPC Endpoint URL determines which network your code will interact with. You can use a node provider service or point to your [own RPC node](/run-node/rpc-node). A comprehensive list of public and private RPC endpoints for all Flare networks is available on the [Network Configuration](/network/overview#configuration) page.
+
+2. **Contract Address:** The address for the `FastUpdater` contract varies by network. You can obtain this address in two ways:
+
+   - **From the Solidity Reference page:** Find the `FastUpdater` address for each network on the [Solidity Reference](../solidity-reference) page.
+
+     **OR**
+
+   - **Query the FlareContractRegistry Contract:** The `FlareContractRegistry` contract has the same address across all networks. You can query it to get the `FastUpdater` contract address. Refer to the specific language guides for examples:
+     - [JavaScript](/network/guides/flare-for-javascript-developers#make-query)
+     - [Python](/network/guides/flare-for-python-developers#make-query)
+     - [Rust](/network/guides/flare-for-rust-developers#make-query)
+     - [Go](/network/guides/flare-for-go-developers#make-query)
+
+3. **Feed Indexes:** The feeds you want to read are uniquely identified by their index. A list of feed indexes is provided on the [Block-Latency Feeds](../feeds) page.
+
+:::tip
+
+All examples in this guide are available on the [developer-hub repository](https://github.com/flare-foundation/developer-hub/tree/main/examples).
+
+:::
+
+<Tabs block>
+  <TabItem value="web3js" label="web3.js" default>
+
+    This example uses [web3.js](https://github.com/web3/web3.js) to retrieve FTSOv2 feed data for FLR/USD, BTC/USD, and ETH/USD on Flare Testnet Coston2.
+
+    ```bash
+    npm install web3
+    ```
+
+    <CodeBlock language="javascript" title="ftsov2_consumer.js">
+      {ReadOffhainWeb3Js}
+    </CodeBlock>
+
+  </TabItem>
+  <TabItem value="ethersjs" label="ethers.js">
+    This example uses [ethers.js](https://github.com/ethers-io/ethers.js/) to retrieve FTSOv2 feed data for FLR/USD, BTC/USD, and ETH/USD on Flare Testnet Coston2.
+
+    ```bash
+    npm install ethers
+    ```
+
+    <CodeBlock language="javascript" title="ftsov2_consumer.js">
+      {ReadOffhainEthersJs}
+    </CodeBlock>
+
+  </TabItem>
+  <TabItem value="web3py" label="web3.py">
+
+    This example uses [web3.py](https://github.com/ethereum/web3.py) to retrieve FTSOv2 feed values for FLR/USD, BTC/USD, and ETH/USD on Flare Testnet Coston2.
+
+    <Tabs groupId="python">
+      <TabItem value="poetry" label="poetry" default>
+        ```bash
+        poetry add web3
+        ```
+
+      </TabItem>
+      <TabItem value="pip" label="pip">
+        ```bash
+        pip install web3
+        ```
+
+      </TabItem>
+    </Tabs>
+
+    <CodeBlock language="python" title="ftsov2_consumer.py">
+      {ReadOffhainWeb3Py}
+    </CodeBlock>
+
+    <details>
+    <summary>Didn't understand the Python code?</summary>
+
+    Let's go through the Python code step-by-step to understand its functionality.
+
+    **Imports**
+
+    ```python
+    import asyncio
+    from web3 import AsyncHTTPProvider, AsyncWeb3
+    ```
+
+    - `asyncio`: A library to write concurrent code using the `async`/`await` syntax.
+    - `AsyncHTTPProvider`, `AsyncWeb3`: Asynchronous versions of `web3` components for interacting with the Ethereum blockchain.
+
+    **Configuration**
+
+    ```python
+    ADDRESS = "0x58fb598EC6DB6901aA6F26a9A2087E9274128E59"
+    RPC_URL = "https://rpc.ankr.com/flare_coston2"
+    FEED_INDEXES = [0, 2, 9]
+    ABI = '[...]'
+    ```
+
+    - `ADDRESS`: The address of the `FastUpdater` smart contract on the Flare Testnet Coston2.
+    - `RPC_URL`: The URL of the RPC node to connect to the Ethereum network.
+    - `FEED_INDEXES`: List of indexes representing specific price feeds: 0 for FLR/USD, 2 for BTC/USD, and 9 for ETH/USD.
+    - `ABI`: The Application Binary Interface (ABI) of the FastUpdater smart contract, which describes the contract's methods and events.
+
+    **Main Asynchronous Function**
+
+    ```python
+    async def main() -> None:
+        # Connect to an RPC node
+        w3 = AsyncWeb3(AsyncHTTPProvider(RPC_URL))
+    ```
+
+    - Connect to the RPC node using `AsyncWeb3` and `AsyncHTTPProvider`.
+
+    ```python
+        # Set up contract instance
+        ftsov2 = w3.eth.contract(address=ADDRESS, abi=ABI)
+    ```
+
+    - Create an instance of the smart contract using its address and ABI.
+
+    ```python
+        # Fetch current feeds
+        feeds, decimals, timestamp = await ftsov2.functions.fetchCurrentFeeds(
+          FEED_INDEXES
+        ).call()
+    ```
+
+    - Call the `fetchCurrentFeeds` method of the smart contract with `FEED_INDEXES` to get the current feed data.
+    - This method returns `feeds`, `decimals`, and `timestamp`:
+      - `feeds`: The price feed data.
+      - `decimals`: The decimal places for each feed value.
+      - `timestamp`: The timestamp when the feeds were last updated.
+
+    **Entry Point**
+
+    ```python
+    if __name__ == "__main__":
+        asyncio.run(main())
+    ```
+
+    - When the script is executed, it runs the `main` function within an asyncio event loop using `asyncio.run()`.
+
+    </details>
+
+  </TabItem>
+  <TabItem value="alloyrs" label="alloy-rs">
+
+    This example uses [alloy-rs](https://github.com/alloy-rs) to retrieve FTSOv2 feed data for FLR/USD, BTC/USD, and ETH/USD on Flare Testnet Coston2.
+
+    Add the following dependencies to `Cargo.toml`:
+
+    ```toml title="Cargo.toml"
+    alloy = { version = "0.1", features = ["full"] }
+    eyre = "0.6"
+    tokio = { version = "1", features = ["rt", "rt-multi-thread", "macros"] }
+    ```
+
+    <CodeBlock language="rust" title="ftsov2_consumer.rs">
+      {ReadOffhainRust}
+    </CodeBlock>
+
+    <details>
+    <summary>Didn't understand the Rust code?</summary>
+
+    Let's go through the Rust code step-by-step to understand its functionality.
+
+    **Libraries and Crates**
+
+    ```rust
+    use alloy::{primitives::U256, providers::ProviderBuilder, sol};
+    ```
+
+    - This line imports necessary modules from the `alloy` crate. The `U256` primitive is used for handling 256-bit unsigned integers. `ProviderBuilder` is for building a provider to connect to an RPC node. The `sol` macro is used for Solidity contract interaction.
+
+    ```rust
+    use eyre::Result;
+    ```
+
+    - This line imports the `Result` type from the `eyre` crate for better error handling.
+
+    **Solidity Contract Interface**
+
+    ```rust
+    sol!(
+      #[sol(rpc)]
+      FtsoV2,
+      r#"..."#
+    );
+    ```
+
+    - This macro defines a Solidity contract interface named `FtsoV2`. The long JSON string inside the macro is the ABI (Application Binary Interface) of the contract. It specifies the functions, events, and errors of the contract, allowing Rust code to interact with the Solidity contract on the Ethereum blockchain.
+
+    **Asynchronous Main Function**
+
+    ```rust
+    #[tokio::main] async fn main() -> Result<()> {
+    ```
+
+    - This line uses the `#[tokio::main]` attribute to mark the main function as asynchronous, enabling it to perform asynchronous operations. The function returns a `Result<()>`, indicating it can return errors wrapped in the `eyre::Result` type.
+
+    **Initialization and Connection**
+
+    ```rust
+    let address = "0x58fb598EC6DB6901aA6F26a9A2087E9274128E59".parse()?;
+    let rpc_url = "https://rpc.ankr.com/flare_coston2".parse()?;
+    let feed_indexes = vec![U256::from(0_u32), U256::from(2_u32), U256::from(9_u32)];
+    let provider = ProviderBuilder::new().on_http(rpc_url);
+    ```
+
+    - The contract address and RPC URL are parsed into appropriate types.
+    - This sets up a vector of feed indexes, which correspond to specific data feeds (e.g., FLR/USD, BTC/USD, ETH/USD).
+    - A provider is created using `ProviderBuilder`, configured to connect via HTTP to the specified RPC URL.
+
+    **Contract Interaction**
+
+    ```rust
+    let ftsov2 = FtsoV2::new(address, provider);
+    let FtsoV2::fetchCurrentFeedsReturn {
+      _feeds,
+      _decimals,
+      _timestamp
+    } = ftsov2.fetchCurrentFeeds(feed_indexes).call().await?;
+    ```
+
+    - An instance of the `FtsoV2` contract is created using the contract address and the provider.
+    - The function `fetchCurrentFeeds` is called on the contract instance, passing in the feed indexes. This function is awaited asynchronously and returns the current feed data.
+    - The fetched feed data (`_feeds`), their decimals (`_decimals`), and the timestamp (`_timestamp`) are stored in the corresponding variables.
+
+    **Error handling**
+
+    ```rust
+    Ok(())
+    ```
+
+    - The function returns `Ok(())` to indicate successful execution.
+
+    </details>
+
+  </TabItem>
+  <TabItem value="goethereum" label="go-ethereum">
+
+    This example uses the Go API from [Geth](https://geth.ethereum.org) to retrieve FTSOv2 feed data for FLR/USD, BTC/USD, and ETH/USD from Flare Testnet Coston2.
+
+    ```bash
+    go get github.com/ethereum/go-ethereum/ethclient
+    ```
+    With Go, you need to manually fetch the contract's ABI and generate the Go bindings. Copy the [FastUpdater ABI](https://api.routescan.io/v2/network/testnet/evm/114/etherscan/api?module=contract&action=getabi&address=0x58fb598EC6DB6901aA6F26a9A2087E9274128E59&format=raw) and paste it into a file named `FastUpdater.abi`, located in the root of your project, i.e. same level as `go.mod`. Then using [abigen](https://geth.ethereum.org/docs/tools/abigen), generate the Go bindings.
+
+    ```bash
+    abigen --abi FastUpdater.abi --pkg main --type FastUpdater --out FastUpdater.go
+    ```
+
+    <CodeBlock language="go" title="ftsov2_consumer.go">
+      {ReadOffhainGo}
+    </CodeBlock>
+
+  </TabItem>
+</Tabs>

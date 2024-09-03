@@ -1,0 +1,105 @@
+---
+title: Change quote feed
+tags: [intermediate, ftso, solidity]
+slug: change-quote-feed
+description: Change block-latency quote feeds using Solidity.
+keywords:
+  [
+    ftso,
+    oracle,
+    flare-time-series-oracle,
+    flare-network,
+    smart-contracts,
+    solidity,
+    remix,
+  ]
+sidebar_position: 3
+---
+
+import Remix from "@site/src/components/remix";
+import CodeBlock from "@theme/CodeBlock";
+import FtsoV2ChangeQuoteFeed from "!!raw-loader!/examples/developer-hub-solidity/FtsoV2ChangeQuoteFeed.sol";
+import SetEvmVersionRemix from "/static/img/set-evm-version-remix.png";
+
+This guide will show you how to fetch the latest feed values for two feeds and convert them to a new quote feed. For example, if you need the price of `BTC/ETH`, you can fetch the latest feed values for `BTC/USD` and `ETH/USD` and calculate the price of `BTC/ETH = (BTC/USD) / (ETH/USD)`.
+
+In the following smart contract, for `BTC/USD` (feed index `2`) and `ETH/USD` (feed index `9`), returning the value of `BTC/ETH`, the function signature would be:
+
+```solidity
+getNewQuoteFeedValue([2, 9])
+```
+
+<CodeBlock language="solidity" title="FtsoV2ChangeQuoteFeed.sol">
+  {FtsoV2ChangeQuoteFeed}
+</CodeBlock>
+
+{/* prettier-ignore */}
+<Remix gist="c1dccb7c1216aa5f8de7caf03565d8d2">Open in Remix</Remix>
+<br></br>
+
+:::warning[When compiling and deploying the contract]
+
+- **Using Remix:** Set EVM version to `london` in the **Advanced Configurations** section of the **Solidity Compiler** tab:
+
+  <img src={SetEvmVersionRemix} style={{ width: 300 }} />
+
+- **Using Hardhat or Foundry:** Set EVM version to `london` in [hardhat.config.ts](https://github.com/flare-foundation/flare-hardhat-starter/blob/master/hardhat.config.ts#L34) or [foundry.toml](https://github.com/flare-foundation/flare-foundry-starter/blob/master/foundry.toml).
+
+- **Using Standard Solidity JSON:** Set `evmVersion` to `london`:
+
+  ```json
+  {
+    "settings": {
+      "optimizer": {
+        /* ... */
+      },
+      "evmVersion": "london"
+    }
+  }
+  ```
+
+- **Using `solc` CLI:** Set `--evm-version` to `london`:
+
+  ```bash
+  solc --evm-version london <args>
+  ```
+
+:::
+
+<details>
+<summary>Didn't understand the Solidity code?</summary>
+
+- **Purpose**: This contract interacts with the Flare Network to fetch feed values and compute a new quote feed value based on the base and quote feed values.
+
+- **Dependencies**:
+
+  - `IFlareContractRegistry`: Interface to get contract addresses from the Flare Network registry.
+  - `IFastUpdater`: Interface to fetch current feed values.
+
+- **State Variables**:
+
+  - `contractRegistry`: Instance of `IFlareContractRegistry` to access the contract registry.
+  - `ftsoV2`: Instance of `IFastUpdater` to fetch feed values.
+
+- **Constructor**:
+
+  - Initializes `contractRegistry` with a hardcoded address.
+  - Retrieves and sets the `ftsoV2` contract address using the contract registry.
+
+- **Internal Function `_scaleBaseFeedValue`**:
+
+  - Scales the base feed value to match the decimals of the quote feed.
+  - Adjusts the feed value by scaling up or down depending on the difference in decimals.
+
+- **External Function `getNewQuoteFeedValue`**:
+
+  - Accepts an array of feed indexes (base and quote feed indexes).
+  - Fetches current feed values and decimals using `ftsoV2`.
+  - Scales the base feed value to match the quote feed decimals.
+  - Computes and returns the new quote feed value by adjusting for the decimal differences and performing a calculation.
+
+- **Key Validations**:
+  - Ensures exactly two feed indexes are provided.
+  - Prevents division by zero during the computation of the new quote feed value.
+
+</details>

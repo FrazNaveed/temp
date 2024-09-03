@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "developer-hub-python"
+version = "0.1.0"
+description = ""
+authors = ["dineshpinto <annual.fallout_0z@icloud.com>"]
+license = "MIT"
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12"
+web3 = "^6.19.0"
+py-solc-x = "^2.0.3"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.4.5"
+pytest = "^8.2.2"
+pytest-asyncio = "^0.23.7"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = ["S101", "D", "ISC001", "COM812", "T201", "N806", "E501"]
