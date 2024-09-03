@@ -54,7 +54,7 @@ export default function HeroSection() {
       </div>
       <picture className={classes.mobileImage}>
         <source
-          srcSet="/img/landing/dev_hub_hero_mobile.webp"
+          srcSet="/img/landing/dev_hub_hero_mobile.jpg"
           media="(max-width: 996px)"
         />
         <img src="" />
