@@ -199,6 +199,11 @@ const config: Config = {
       src: "https://cdn-cookieyes.com/client_data/dedcd40fe7e8316d7512b294/script.js",
       id: "cookieyes",
     },
+
+    {
+      src: 'https://www.googletagmanager.com/gtag/js?id=G-E6JBVK9HQX',
+      async: true,
+    },
   ],
 };
 
