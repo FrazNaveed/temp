@@ -12,7 +12,7 @@ export default function Home(): JSX.Element {
   return (
     <Layout title={`${siteConfig.title}`} description={`${siteConfig.tagline}`}>
       <main>
-        {hideHamburger && (
+        {/* {hideHamburger && (
           <style>
             {`
             .navbar__toggle {
@@ -20,7 +20,7 @@ export default function Home(): JSX.Element {
             }
           `}
           </style>
-        )}
+        )} */}
         <HeroSection />
         <FeaturesSection />
       </main>
