@@ -57,7 +57,7 @@ export default function HeroSection() {
           srcSet="/img/landing/dev_hub_hero_mobile.webp"
           media="(max-width: 996px)"
         />
-        <img src="/img/landing/dev_hub_hero_mobile.webp"/>
+        <img src="" alt="hero-image" width="305" height="327" />
       </picture>
       <div className={clsx(classes.content, "container")}>
         <div className={classes.callToAction}>
