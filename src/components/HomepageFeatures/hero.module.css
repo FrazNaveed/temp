@@ -93,8 +93,11 @@
   align-self: center;
 }
 
-
-
+.mobileOnly {
+  width: 305px;
+  height: 327px;
+  display: block;
+}
 
 @media (min-width: 996px) {
   .heroSection {
@@ -132,6 +135,9 @@
     font-size: 20px;
   }
 
+  .mobileOnly {
+    display: none;
+  }
 }
 
 [data-theme="dark"] .button {
